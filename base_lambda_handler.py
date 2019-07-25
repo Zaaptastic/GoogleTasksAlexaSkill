@@ -35,21 +35,41 @@ def build_PlainSpeech(body):
     speech['text'] = body
     return speech
 
+def handle_add_item_intent(item_to_add, list_name, prompt_text):
+    results = tasks_service_client.tasks().insert(tasklist=tasklist_id, body={"title": item_to_add.capitalize()}).execute()
+    print(results)
+
+    message = build_PlainSpeech(prompt_text + " I've added " + item_to_add + " to your " + list_name + " List")
+    return build_response(message)
+
+def handle_get_items_intent(list_name):
+    results = tasks_service_client.tasks().list(tasklist=tasklist_id, showCompleted=False).execute()
+    print(results)
+
+    items = results.get('items', [])
+
+    if not items:
+        return build_response(build_PlainSpeech("Your " + list_name + " list is empty"))
+    elif len(items) is 1:
+        return build_response(build_PlainSpeech("Your " + list_name + " list contains one item: " + items[0]['title']))
+    else:
+        list_as_string = ""
+        last_item = items.pop()
+
+        for item in items:
+            list_as_string = list_as_string + item['title'] +", "
+
+        list_as_string = list_as_string + "and " + last_item['title']
+        return build_response(build_PlainSpeech("Your " + list_name + " list contains " + str(len(items) + 1) + " items: " + list_as_string)) 
+
 def base_handle(event, context, list_name, prompt_text):
     print("Beginning Lambda Handler Execution for " + list_name + " List Synchronization.")
     print(event['request']['type'])
     if event['request']['type'] == "LaunchRequest":
-        message = build_PlainSpeech("Welcome to " + list_name + " Sync skill")
-        return build_response(message)
+        return handle_get_items_intent(list_name)
     if event['request']['type'] == "IntentRequest":
         item_to_add = event['request']['intent']['slots']['item_to_add']['value']
-
-        results = tasks_service_client.tasks().insert(tasklist=tasklist_id, body={"title": item_to_add.capitalize()}).execute()
-        print(results)
-
-        message = build_PlainSpeech(prompt_text + " I've added " + item_to_add + " to your " + list_name + " List")
-        return build_response(message)
-
+        return handle_add_item_intent(item_to_add, list_name, prompt_text)
 
 def handle_shopping_sync(event, context):
     return base_handle(event, context, "Shopping", "Good job, you did it!")
