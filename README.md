@@ -6,7 +6,7 @@ Much of the initial code was copied over from [this Project](https://github.com/
 
 ## Making Code Changes
 
-The following steps must be followed in order to create a deployable .zip file for Overdue.
+The following steps must be followed in order to create a deployable .zip file for GoogleTasksAlexaSkill.
 
 ### Install Dependencies
 
@@ -53,17 +53,17 @@ The following command creates the .zip file and adds the package dependencies to
 
 ```
 cd package
-zip -r9 ../overdue.zip .
+zip -r9 ../google_tasks_alexa_skill.zip .
 ```
 
 Next, run the following command to add the handler function code and your token to the .zip archive.
 
 ```
 cd ../
-zip -g overdue.zip *lambda_handler.py
+zip -g google_tasks_alexa_skill.zip *lambda_handler.py
 ```
 
-Done! Now you should have a complete `overdue.zip` file that you can upload to your Lambda Function.
+Done! Now you should have a complete `google_tasks_alexa_skill.zip` file that you can upload to your Lambda Function.
 
 ## Configuring Lambda
 
