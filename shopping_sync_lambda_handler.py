@@ -43,7 +43,7 @@ def handle_shopping_sync(event, context):
     if event['request']['type'] == "IntentRequest":
         item_to_add = event['request']['intent']['slots']['item_to_add']['value']
 
-        results = tasks_service_client.tasks().insert(tasklist=tasklist_id, body={"title": item_to_add}).execute()
+        results = tasks_service_client.tasks().insert(tasklist=tasklist_id, body={"title": item_to_add.capitalize()}).execute()
         print(results)
 
         message = build_PlainSpeech("Good job, you did it! I've added " + item_to_add + " to your Shopping List")

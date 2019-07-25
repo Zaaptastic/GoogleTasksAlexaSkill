@@ -43,7 +43,7 @@ def handle_to_do_sync(event, context):
     if event['request']['type'] == "IntentRequest":
         item_to_add = event['request']['intent']['slots']['item_to_add']['value']
 
-        results = tasks_service_client.tasks().insert(tasklist=tasklist_id, body={"title": item_to_add}).execute()
+        results = tasks_service_client.tasks().insert(tasklist=tasklist_id, body={"title": item_to_add.capitalize()}).execute()
         print(results)
 
         message = build_PlainSpeech("Ok, done. I've added " + item_to_add + " to your To-Do List")
