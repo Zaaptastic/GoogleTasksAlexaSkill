@@ -35,10 +35,11 @@ def build_PlainSpeech(body):
     speech['text'] = body
     return speech
 
-def handle_shopping_sync(event, context):
+def base_handle(event, context, list_name, prompt_text):
+    print("Beginning Lambda Handler Execution for " + list_name + " List Synchronization.")
     print(event['request']['type'])
     if event['request']['type'] == "LaunchRequest":
-        message = build_PlainSpeech("Welcome to Shopping Sync skill")
+        message = build_PlainSpeech("Welcome to " + list_name + " Sync skill")
         return build_response(message)
     if event['request']['type'] == "IntentRequest":
         item_to_add = event['request']['intent']['slots']['item_to_add']['value']
@@ -46,5 +47,12 @@ def handle_shopping_sync(event, context):
         results = tasks_service_client.tasks().insert(tasklist=tasklist_id, body={"title": item_to_add.capitalize()}).execute()
         print(results)
 
-        message = build_PlainSpeech("Good job, you did it! I've added " + item_to_add + " to your Shopping List")
+        message = build_PlainSpeech(prompt_text + " I've added " + item_to_add + " to your " + list_name + " List")
         return build_response(message)
+
+
+def handle_shopping_sync(event, context):
+    return base_handle(event, context, "Shopping", "Good job, you did it!")
+
+def handle_to_do_sync(event, context):
+    return base_handle(event, context, "To Do", "Ok, done.")
