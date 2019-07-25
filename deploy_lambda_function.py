@@ -9,7 +9,7 @@ if 0 is not test_output:
 	quit()
 print("Tests passed! Bundling function code into ZIP archive")
 
-zip_output = os.system("cd package && zip -r9 ../google_tasks_alexa_skill.zip . && cd ../ && zip -g google_tasks_alexa_skill.zip *lambda_handler.py")
+zip_output = os.system("cd package && zip -r9 ../google_tasks_alexa_skill.zip . && cd ../ && zip -g google_tasks_alexa_skill.zip *lambda_handler.py google_tasks_gateway.py")
 if 0 is not zip_output:
 	quit()
 print("Created deployable ZIP archive, beginning Lambda Deployment")
